@@ -43,6 +43,9 @@ Because some of our data wasnt available for the Early years of our time series,
 7. Generate interpolated values using the gradient for the determined length.
 8. Update the series up to the first valid index with the interpolated values
 
+## Feature Engeneering:
+
+
 
 ## Train Test split
 
@@ -50,11 +53,6 @@ for validation purposes we used a 20% test split, even tho we have timeseries da
 The autocorrelation is accountet for as we add t-1 cpi (target from prev timestep) as a controll variable
 
 Random Intervals as Test set, should be fine even tho we have a Timeseries (we only predict 1 timestamp m/m)
-
-
-## Feature Engeneering:
-
-
 
 
 

@@ -9,7 +9,7 @@
 The Data mainly originated from [fred]([URL](https://fred.stlouisfed.org/))
 some additional sources like: 
 
-[Manheim vehicle Index]([URL](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html))
+[Manheim vehicle Index](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html)
 
 [US trade balence](www.census.gov/foreign-trade/balance/)
 

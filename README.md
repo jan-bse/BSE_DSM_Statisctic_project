@@ -6,6 +6,27 @@
 
 ### Data summary 
 
+Our raw data had following structure
+
+![Example Image](rescources/raw_data.png)
+
+
+We interpolated the missing data with following method:
+
+Explanation:
+The function takes a time series as input and performs backward interpolation from the first
+valid data point up to the earliest available data point in the year 2013.
+
+1. Extract a sub-series from the input series for the years 2013 to 2019.
+2. Calculate the mean of the values in this sub-series (vector_2013_2019).
+3. Find the first valid index and its corresponding value in the input series.
+4. Calculate the time frame between the first valid index and the year 2016.
+5. Compute the gradient (rate of change) using the mean value and the first valid value over the time frame.
+6. Determine the length of the portion of the series up to the first valid index.
+7. Generate interpolated values using the gradient for the determined length.
+8. Update the series up to the first valid index with the interpolated values
+
+
 n ~ 450 
 d ~ 100
 

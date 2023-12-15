@@ -45,6 +45,20 @@ Because some of our data wasnt available for the Early years of our time series,
 
 ## Feature Engeneering:
 
+To make sure our model can infer anything from our input data, we need to make sure your input features make sense. We cant just input the staationary values of dow jones industrial index for example and explect your model to predict anything.
+so we need to do some feature engeneering on the data to make it Stationary and preferably linearly correlated to cpi m/m change which is your target variable.
+
+But we also need to be carful to not overdo it with our feature engeneering. We dont have that high of a sample size (n) with between 400 to 600 samples based on were we choose our cutoff date (somwere between 1970-2000). And if we engineer to many new features it could be that some just correlate with our target varable by chance. 
+And no model can filter these random correlations out not even with baysian statistics unsless we set a uninformative prior by hand, which we cant do because it is impossible to know if the correlation is just by chance or not.
+
+Thats why the best solution is to be careful with your feature engineering.
+
+
+### Feature engennering methods:
+
+1 month, 3 month and 9 month log diffrence
+3 month and 9 month log diff laged by 6 and 9 month respectivly
+_24ma = cpi_pctt1 - 24m_rolling_pct_change
 
 
 ## Train Test split
@@ -54,7 +68,7 @@ The autocorrelation is accountet for as we add t-1 cpi (target from prev timeste
 
 Random Intervals as Test set, should be fine even tho we have a Timeseries (we only predict 1 timestamp m/m)
 
-
+![Example Image](rescources/train_test_split.png)
 
 
 Problem: Very high correlation in Covariates

@@ -54,7 +54,7 @@ And no model can filter these random correlations out not even with baysian stat
 Thats why the best solution is to be careful with your feature engineering.
 
 
-## Feature engennering methods:
+### Feature engennering methods:
 
 1 month, 3 month and 9 month log diffrence
 3 month and 9 month log diff laged by 6 and 9 month respectivly

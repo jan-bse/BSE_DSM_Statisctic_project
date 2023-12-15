@@ -11,7 +11,7 @@ Our raw data had following structure
 ![Example Image](rescources/raw_data.png)
 
 
-# Interpolation
+## Interpolation
 
 Explanation:
 The function takes a time series as input and performs backward interpolation from the first
@@ -26,23 +26,18 @@ valid data point up to the earliest available data point in the year 2013.
 7. Generate interpolated values using the gradient for the determined length.
 8. Update the series up to the first valid index with the interpolated values
 
+## Target (y) engeneering
 
-n ~ 450 
-d ~ 100
+BASKET_px = CPI basket price in month t
 
-X1 X2 ... Xt
-
-Input data from fred:
-
-will list all sources and describtions here
-...
-
-y1 y2 ... yt
-
-Target y = log(BASKET_px(t)) - log(BASKET_px(t-1))
+y = log(BASKET_px(t)) - log(BASKET_px(t-1))
 
 
-split 20% for test
+## Train Test split
+
+for validation purposes we used a 20% test split, even tho we have timeseries data, shuffling the data was not a problem as we only predict one timestamp in advance. (the log diffrence of the cpi basket for next month)
+The autocorrelation is accountet for as we add t-1 cpi (target from prev timestep) as a controll variable
+
 Random Intervals as Test set, should be fine even tho we have a Timeseries (we only predict 1 timestamp m/m)
 
 

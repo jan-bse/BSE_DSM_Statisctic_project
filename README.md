@@ -7,6 +7,7 @@
 ## Data summary 
 
 The Data mainly originated from [fred](https://fred.stlouisfed.org/)
+
 and some additional sources like: 
 
 [Manheim vehicle Index](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html)

@@ -14,9 +14,17 @@ and some additional sources like:
 
 [US trade balence](www.census.gov/)
 
-
-
 For every single covariate it was ensured that we have have no data leakage. Meaning that atleast 3 days before the CPI realease (2nd wednesday of every month) all our decision variables are available so that we can do Real Predictions of future cpi change.
+
+## Target (y) engeneering
+
+BASKET_px = CPI basket price in month t
+
+y = log(BASKET_px(t)) - log(BASKET_px(t-1))
+
+## Final raw data structure
+
+Previous cpi numbers and changes are also included in Features X, all laged to ensure there is no data leakage
 
 in the end Our raw data had following structure
 
@@ -34,12 +42,6 @@ Because some of our data wasnt available for the Early years of our time series,
 6. Determine the length of the portion of the series up to the first valid index.
 7. Generate interpolated values using the gradient for the determined length.
 8. Update the series up to the first valid index with the interpolated values
-
-## Target (y) engeneering
-
-BASKET_px = CPI basket price in month t
-
-y = log(BASKET_px(t)) - log(BASKET_px(t-1))
 
 
 ## Train Test split

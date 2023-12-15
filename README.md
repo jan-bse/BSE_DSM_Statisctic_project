@@ -4,12 +4,15 @@
 
 ## PROJECT OUTLINE:
 
-### Data summary 
+## Data summary 
 
-The Data manly originated from [fred]([URL](https://fred.stlouisfed.org/))
+The Data mainly originated from [fred]([URL](https://fred.stlouisfed.org/))
 some additional sources like: 
+
 [Manheim vehicle Index]([URL](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html))
+
 [US trade balence](www.census.gov/foreign-trade/balance/)
+
 was used
 
 For every single covariate it was ensured that we have have no data leakage. Meaning that atleast 3 days before the CPI realease (2nd wednesday of every month) all our decision variables are available so that we can do Real Predictions of future cpi change.

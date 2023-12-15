@@ -6,9 +6,6 @@
 
 ### Data summary 
 
-
-
-
 The Data manly originated from [fred]([URL](https://fred.stlouisfed.org/))
 some additional sources like: 
 [Manheim vehicle Index]([URL](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html))

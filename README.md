@@ -11,7 +11,7 @@ Our raw data had following structure
 ![Example Image](rescources/raw_data.png)
 
 
-We interpolated the missing data with following method:
+# Interpolation
 
 Explanation:
 The function takes a time series as input and performs backward interpolation from the first

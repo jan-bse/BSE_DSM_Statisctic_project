@@ -6,16 +6,24 @@
 
 ### Data summary 
 
-Our raw data had following structure
+
+
+
+The Data manly originated from [fred]([URL](https://fred.stlouisfed.org/))
+some additional sources like: 
+[Manheim vehicle Index]([URL](https://site.manheim.com/en/services/consulting/used-vehicle-value-index.html))
+[US trade balence](www.census.gov/foreign-trade/balance/)
+was used
+
+For every single covariate it was ensured that we have have no data leakage. Meaning that atleast 3 days before the CPI realease (2nd wednesday of every month) all our decision variables are available so that we can do Real Predictions of future cpi change.
+
+in the end Our raw data had following structure
 
 ![Example Image](rescources/raw_data.png)
 
-
 ## Interpolation
 
-Explanation:
-The function takes a time series as input and performs backward interpolation from the first
-valid data point up to the earliest available data point in the year 2013.
+Because some of our data wasnt available for the Early years of our time series, but we didnt want to throw away so many samples we had to interpolate the beginning of some datapoint. For that we chose following method:
 
 1. Extract a sub-series from the input series for the years 2013 to 2019.
 2. Calculate the mean of the values in this sub-series (vector_2013_2019).
@@ -39,6 +47,11 @@ for validation purposes we used a 20% test split, even tho we have timeseries da
 The autocorrelation is accountet for as we add t-1 cpi (target from prev timestep) as a controll variable
 
 Random Intervals as Test set, should be fine even tho we have a Timeseries (we only predict 1 timestamp m/m)
+
+
+## Feature Engeneering:
+
+
 
 
 

@@ -54,7 +54,7 @@ The autocorrelation is accountet for as we add t-1 cpi (target from prev timeste
 
 Random Intervals as Test set, should be fine even tho we have a Timeseries (we only predict 1 timestamp m/m)
 
-
+![Example Image](rescources/train_test_split.png)
 
 
 Problem: Very high correlation in Covariates

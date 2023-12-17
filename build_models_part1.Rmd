@@ -1,0 +1,207 @@
+---
+title: "BMA_LASSO_Regression"
+author: "Jan Kagerhuber"
+date: "2023-12-03"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Imports 
+
+```{r}
+library(glmnet)
+library(caret)
+```
+## R Markdown
+
+```{r}
+# Read the data
+df <- read.csv('datasets/train_set.csv')
+test_df <- read.csv('datasets/test_set.csv')
+
+```
+
+```{r}
+X <- df[, 4:ncol(df)]
+y <- df$cpi_pct
+X_test <- test_df[, 4:ncol(test_df)]
+
+X <- as.matrix(X)
+y <- as.vector(y)
+X_test <- as.matrix(X_test)
+```
+
+```{r}
+gaussian_log_likelihood <- function(predictions, y) {
+  n <- length(y)
+  k <- ncol(predictions)
+  
+  residuals <- y - predictions
+  sigma_sq <- apply(residuals^2, 2, sum) / (n - k)
+  
+  log_likelihood <- -0.5 * (n * log(2 * pi * sigma_sq) + colSums(residuals^2) / sigma_sq)
+  
+  return(log_likelihood)
+}
+
+
+
+
+lasso.bic <- function(x,y,extended=FALSE) {
+  #Select model in LASSO path with best BIC (using LASSO regression estimates)
+  #Input
+  # - y: vector with response variable
+  # - x: design matrix
+  # - extended: whether to use EBIC (Chen and Chen 2008) instead of BIC
+  #
+  #Output: list with the following elements
+  # - coef: LASSO-estimated regression coefficient with lambda set via BIC
+  # - ypred: predicted y
+  # - lambda.opt: optimal value of lambda
+  # - lambda: data.frame with bic and number of selected variables for each value of lambda
+  
+  print(dim(x))
+  
+  
+  require(glmnet)
+  fit <- glmnet(x=x,y=y,family='gaussian',alpha=1)
+  pred <- cbind(1,x) %*% rbind(fit$a0,fit$beta)
+  
+  # print(pred)
+  
+  n <- length(y)
+  p <- colSums(fit$beta!=0) + 1
+  
+
+  if (!extended){
+    bic <- -2 * gaussian_log_likelihood(pred, y) + n*(log(2*pi)+1) + log(n)*p 
+  } else {
+    bic <- -2 * gaussian_log_likelihood(pred, y) + n*(log(2*pi)+1) + log(n)*p + 2*log(choose(ncol(x),p))
+  }
+  
+  sel <- which.min(bic)
+  beta <- c(fit$a0[sel],fit$beta[,sel]); names(beta)[1]= 'Intercept'
+  ypred <- pred[,sel]
+  ans <- list(coef=beta,ypred=ypred,lambda.opt=fit$lambda[sel],lambda=data.frame(lambda=fit$lambda,bic=bic,nvars=p))
+  return(ans)
+}
+```
+
+
+```{r}
+result_BIC <- lasso.bic(X, y)
+result_EBIC <- lasso.bic(X, y, TRUE)
+```
+
+
+```{r}
+result_BIC$lambda[order(result$lambda$bic), ]
+```
+
+```{r}
+result_EBIC$lambda[order(result$lambda$bic), ]
+```
+
+
+### EBIC and BIC return the same Results
+
+
+```{r}
+test_pred_BIC <- cbind(1,X_test) %*% result_BIC$coef
+```
+
+```{r}
+# Create a data frame with the predictions
+predictions_df <- data.frame(pred = test_pred_BIC)
+# Write the data frame to a CSV file
+write.csv(predictions_df, "predictions/lasso_BIC.csv")
+```
+
+
+# Now we build a BMA regression Model
+
+
+```{r}
+library(hdm)
+library(glmnet)
+library(ggplot2)
+library(tidyverse)
+library(HDCI)
+library(gridExtra)
+library(mombf) # Bayesian model selection and Bayesian model averaging
+library(rstanarm)
+```
+
+
+```{r}
+mc.cores = parallel::detectCores()
+
+
+# Read the data
+df <- read.csv('datasets/train_set.csv')
+test_df <- read.csv('datasets/test_set.csv')
+
+```
+
+```{r}
+X <- df[, 4:ncol(df)]
+y <- df$cpi_pct
+X_test <- test_df[, 4:ncol(test_df)]
+
+X <- as.matrix(X)
+y <- as.vector(y)
+X_test <- as.matrix(X_test)
+```
+
+
+```{r}
+# Define a function to calculate scores for different 'g' values
+calculate_scores <- function(y_f, x_f, g_range) {
+  # Initialize an empty dataframe to store results
+  result_df <- data.frame(G = numeric(0), Score = numeric(0))
+  
+  # Loop through the range of 'g' values
+  for (g in g_range) {
+    # Fit the model with the current 'g' value
+    fit <- modelSelection(y=y_f ,x=x_f, priorCoef=zellnerprior(taustd=g), priorDelta=modelbbprior(1,1))
+    
+    post.prob = postProb(fit)
+    # Extract the score (the first element in the 'pp' column)
+    score <- post.prob$pp[1]
+    
+    # Append the 'g' and score to the result dataframe
+    result_df <- rbind(result_df, data.frame(G = g, Score = score))
+  }
+  
+  return(result_df)
+}
+```
+
+
+lmbda of 1.886733e-04 would surgest a g of 5300
+
+```{r}
+
+# Define a range of 'g' values
+g_range <- c(0.1, 0.2, 0.5, 1, 2)
+# g_range <- seq(0.03, 1, by = 0.03)
+
+# Call the function to calculate scores for different 'g' values
+result_dataframe <- calculate_scores(y_f = y, x_f = X, g_range)
+
+print(head(result_dataframe))
+
+ggplot(result_dataframe, aes(x = G, y = Score)) +
+geom_point() +
+labs(x = "g", y = "Best Model Proba") +
+ggtitle("Best_Model_Probability vs. g")
+```
+
+
+
+
+
+

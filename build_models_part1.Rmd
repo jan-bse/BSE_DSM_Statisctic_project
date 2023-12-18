@@ -202,6 +202,75 @@ ggtitle("Best_Model_Probability vs. g")
 
 
 
+```{r}
+g = 0.5
 
+margpp <- 0.5
+
+```
+
+
+
+```{r}
+fit.bayesreg <- modelSelection(y=y, x=X, priorCoef=zellnerprior(taustd = 2500), priorDelta=modelbbprior(1,1))
+head(postProb(fit.bayesreg),10)
+```
+
+
+
+```{r}
+ci.bayesreg <- coef(fit.bayesreg)[-c(1,nrow(coef(fit.bayesreg))),]
+sel.bayesreg <- ci.bayesreg[,4] > 0.5
+ci.bayesreg[,1:3] <- round(ci.bayesreg[,1:3], 3)  
+ci.bayesreg[,4] <- round(ci.bayesreg[,4], 4)      
+
+sorted_indices <- order(ci.bayesreg[, "margpp"], decreasing = TRUE)
+
+# Sort the matrix by the specified column
+ci.bayesreg <- ci.bayesreg[sorted_indices, ]
+
+
+head(ci.bayesreg, 5)
+```
+
+
+```{r}
+tail(ci.bayesreg, 5)
+```
+
+choosing diffrent marginal probabilties
+
+
+```{r}
+sum(ci.bayesreg[, "margpp"] > margpp)
+```
+
+
+
+```{r}
+bma_betas <- coef(fit.bayesreg)[, "estimate", drop = FALSE]
+bma_betas <- bma_betas[-nrow(bma_betas), ]
+```
+
+```{r}
+print(dim(X_test))
+print(dim(cbind(1, X_test)))
+print(dim(bma_betas))
+```
+
+
+
+```{r}
+test_pred_BMA <-cbind(1,X_test) %*% bma_betas
+```
+
+
+
+```{r}
+# Create a data frame with the predictions
+predictions_df <- data.frame(pred = test_pred_BMA)
+# Write the data frame to a CSV file
+write.csv(predictions_df, "predictions/BMA_pred.csv")
+```
 
 

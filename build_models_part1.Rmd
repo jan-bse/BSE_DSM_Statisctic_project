@@ -118,12 +118,12 @@ test_pred_EBIC <- cbind(1,X_test) %*% result_EBIC$coef
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_BIC)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/lasso_BIC.csv")
+write.csv(predictions_df, "predictions/lasso_bic.csv")
 
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_EBIC)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/lasso_EBIC.csv")
+write.csv(predictions_df, "predictions/lasso_ebic.csv")
 ```
 
 
@@ -144,22 +144,6 @@ library(rstanarm)
 
 ```{r}
 mc.cores = parallel::detectCores()
-
-
-# Read the data
-df <- read.csv('datasets/train_set.csv')
-test_df <- read.csv('datasets/test_set.csv')
-
-```
-
-```{r}
-X <- df[, 4:ncol(df)]
-y <- df$cpi_pct
-X_test <- test_df[, 4:ncol(test_df)]
-
-X <- as.matrix(X)
-y <- as.vector(y)
-X_test <- as.matrix(X_test)
 ```
 
 
@@ -186,13 +170,20 @@ calculate_scores <- function(y_f, x_f, g_range) {
 }
 ```
 
+
+```{r}
+g_bic <- 1/3.219938e-04
+g_ebic <- 1/3.219938e-04
+```
+
+
 lambda of 6.369799e-04 would surgest a g of 1569
 lambda of 8.420499e-04 would surgest a g of 1187
 
 ```{r}
 
 # Define a range of 'g' values
-g_range <- c(5, 50, 100, 500, 1000, 1200, 1500)
+g_range <- c(5, 50, 100, 500, 1000, 1200, 1500, 2500, 3000)
 # g_range <- seq(0.03, 1, by = 0.03)
 
 # Call the function to calculate scores for different 'g' values
@@ -209,7 +200,7 @@ ggtitle("Best_Model_Probability vs. g")
 
 
 ```{r}
-g = 5
+g = 2500
 
 margpp <- 0.5
 
@@ -281,7 +272,7 @@ test_pred_BMA <-cbind(1,X_test) %*% bma_betas
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_BMA)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/BMA_pred.csv")
+write.csv(predictions_df, "predictions/bma.csv")
 ```
 
 

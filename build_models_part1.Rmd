@@ -98,11 +98,11 @@ result_EBIC <- lasso.bic(X, y, TRUE)
 
 
 ```{r}
-result_BIC$lambda[order(result$lambda$bic), ]
+result_BIC$lambda[order(result_BIC$lambda$bic), ]
 ```
 
 ```{r}
-result_EBIC$lambda[order(result$lambda$bic), ]
+result_EBIC$lambda[order(result_EBIC$lambda$bic), ]
 ```
 
 
@@ -111,6 +111,7 @@ result_EBIC$lambda[order(result$lambda$bic), ]
 
 ```{r}
 test_pred_BIC <- cbind(1,X_test) %*% result_BIC$coef
+test_pred_EBIC <- cbind(1,X_test) %*% result_EBIC$coef
 ```
 
 ```{r}
@@ -118,6 +119,11 @@ test_pred_BIC <- cbind(1,X_test) %*% result_BIC$coef
 predictions_df <- data.frame(pred = test_pred_BIC)
 # Write the data frame to a CSV file
 write.csv(predictions_df, "predictions/lasso_BIC.csv")
+
+# Create a data frame with the predictions
+predictions_df <- data.frame(pred = test_pred_EBIC)
+# Write the data frame to a CSV file
+write.csv(predictions_df, "predictions/lasso_EBIC.csv")
 ```
 
 
@@ -180,13 +186,13 @@ calculate_scores <- function(y_f, x_f, g_range) {
 }
 ```
 
-
-lmbda of 1.886733e-04 would surgest a g of 5300
+lambda of 6.369799e-04 would surgest a g of 1569
+lambda of 8.420499e-04 would surgest a g of 1187
 
 ```{r}
 
 # Define a range of 'g' values
-g_range <- c(0.1, 0.2, 0.5, 1, 2)
+g_range <- c(5, 50, 100, 500, 1000, 1200, 1500)
 # g_range <- seq(0.03, 1, by = 0.03)
 
 # Call the function to calculate scores for different 'g' values
@@ -203,7 +209,7 @@ ggtitle("Best_Model_Probability vs. g")
 
 
 ```{r}
-g = 0.5
+g = 5
 
 margpp <- 0.5
 
@@ -212,7 +218,7 @@ margpp <- 0.5
 
 
 ```{r}
-fit.bayesreg <- modelSelection(y=y, x=X, priorCoef=zellnerprior(taustd = 2500), priorDelta=modelbbprior(1,1))
+fit.bayesreg <- modelSelection(y=y, x=X, priorCoef=zellnerprior(taustd = g), priorDelta=modelbbprior(1,1))
 head(postProb(fit.bayesreg),10)
 ```
 
@@ -229,6 +235,11 @@ sorted_indices <- order(ci.bayesreg[, "margpp"], decreasing = TRUE)
 # Sort the matrix by the specified column
 ci.bayesreg <- ci.bayesreg[sorted_indices, ]
 
+# Fill missing values with 0 using the fillna() function
+ci.bayesreg <- ifelse(is.na(ci.bayesreg), 0, ci.bayesreg)
+```
+
+```{r}
 
 head(ci.bayesreg, 5)
 ```
@@ -242,7 +253,7 @@ choosing diffrent marginal probabilties
 
 
 ```{r}
-sum(ci.bayesreg[, "margpp"] > margpp)
+sum(ci.bayesreg[, 'margpp'] > margpp)
 ```
 
 
@@ -255,7 +266,7 @@ bma_betas <- bma_betas[-nrow(bma_betas), ]
 ```{r}
 print(dim(X_test))
 print(dim(cbind(1, X_test)))
-print(dim(bma_betas))
+head(bma_betas)
 ```
 
 

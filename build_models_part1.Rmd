@@ -25,14 +25,22 @@ test_df <- read.csv('datasets/test_set.csv')
 ```
 
 ```{r}
-X <- df[, 4:ncol(df)]
+X <- df[, 4:50]
 y <- df$cpi_pct
-X_test <- test_df[, 4:ncol(test_df)]
+X_test <- test_df[, 4:50]
 
 X <- as.matrix(X)
 y <- as.vector(y)
 X_test <- as.matrix(X_test)
 ```
+
+
+```{r}
+head(X)
+```
+
+
+
 
 ```{r}
 gaussian_log_likelihood <- function(predictions, y) {

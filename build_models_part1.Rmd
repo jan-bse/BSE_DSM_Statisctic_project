@@ -9,7 +9,14 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Imports 
+
+```{r}
+# Set the flag for PCA
+USE_PCA <- TRUE  # Change this to FALSE if not using PCA
+```
+
+
+
 
 ```{r}
 library(glmnet)
@@ -18,20 +25,38 @@ library(caret)
 ## R Markdown
 
 ```{r}
-# Read the data
-df <- read.csv('datasets/train_set.csv')
-test_df <- read.csv('datasets/test_set.csv')
+library(data.table)
 
+# Define PCA prefixes and suffixes
+pca_prefix <- if (USE_PCA) 'pca_' else ''
+pca_suffix <- if (USE_PCA) '_pca' else ''
 ```
 
+
 ```{r}
-X <- df[, 4:50]
+# Read the CSV files
+df <- fread(paste0('datasets/train_set', pca_suffix, '.csv'))
+test_df <- fread(paste0('datasets/test_set', pca_suffix, '.csv'))
+
+# Subset the data based on PCA flag
+if (USE_PCA) {
+  X <- df[, 5:ncol(df)]
+} else {
+  X <- df[, 4:ncol(df)]
+}
+
+# Extract the target variable
 y <- df$cpi_pct
-X_test <- test_df[, 4:50]
+
+# Subset the test data
+X_test <- test_df[, .SD, .SDcols = colnames(X)]
+
 
 X <- as.matrix(X)
-y <- as.vector(y)
 X_test <- as.matrix(X_test)
+y <- as.vector(y)
+
+
 ```
 
 
@@ -126,12 +151,14 @@ test_pred_EBIC <- cbind(1,X_test) %*% result_EBIC$coef
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_BIC)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/lasso_bic.csv")
+write.csv(predictions_df, paste("predictions/", pca_prefix, "lasso_bic.csv", sep = ""))
 
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_EBIC)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/lasso_ebic.csv")
+
+
+write.csv(predictions_df, paste("predictions/", pca_prefix, "lasso_ebic.csv", sep = ""))
 ```
 
 
@@ -282,7 +309,7 @@ test_pred_BMA <-cbind(1,X_test) %*% bma_betas
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_BMA)
 # Write the data frame to a CSV file
-write.csv(predictions_df, "predictions/bma.csv")
+write.csv(predictions_df, paste("predictions/", pca_prefix, "bma.csv", sep = ""))
 ```
 
 

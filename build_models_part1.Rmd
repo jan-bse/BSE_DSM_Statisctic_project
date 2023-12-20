@@ -147,6 +147,16 @@ test_pred_BIC <- cbind(1,X_test) %*% result_BIC$coef
 test_pred_EBIC <- cbind(1,X_test) %*% result_EBIC$coef
 ```
 
+
+```{r}
+write.csv(result_BIC$coef, file = paste("models/coefs/", pca_prefix, "lasso_bic_coefs.csv", sep = ""), row.names = TRUE)
+write.csv(result_EBIC$coef, file = paste("models/coefs/", pca_prefix, "lasso_ebic_coefs.csv", sep = ""), row.names = TRUE)
+
+paste("models/coefs/", pca_prefix, "lasso_ebic_coefs.csv", sep = "")
+```
+
+
+
 ```{r}
 # Create a data frame with the predictions
 predictions_df <- data.frame(pred = test_pred_BIC)
@@ -207,6 +217,8 @@ calculate_scores <- function(y_f, x_f, g_range) {
 
 
 ```{r}
+
+
 g_cv <- 1/8.697490026177834e-05
 g_ebic <- 1/3.219938e-04
 
@@ -237,7 +249,7 @@ ggtitle("Best Model_margpp vs. g")
 
 
 ```{r}
-g = 11000
+g <- if (USE_PCA) 3000 else 11000
 
 margpp <- 0.5
 
@@ -311,5 +323,20 @@ predictions_df <- data.frame(pred = test_pred_BMA)
 # Write the data frame to a CSV file
 write.csv(predictions_df, paste("predictions/", pca_prefix, "bma.csv", sep = ""))
 ```
+
+
+```{r}
+write.csv(bma_betas, file = paste("models/coefs/", pca_prefix, "bma_coefs.csv", sep = ""), row.names = TRUE)
+write.csv(coef(fit.bayesreg), file = paste("models/coefs/", pca_prefix, "bma_coefs_intervalls.csv", sep = ""), row.names = TRUE)
+
+
+```
+
+
+
+
+
+
+
 
 

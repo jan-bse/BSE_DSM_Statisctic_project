@@ -12,9 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # Set the flag for PCA
-USE_PCA <- FALSE  # Change this to FALSE if not using PCA
+USE_PCA <- TRUE  # Change this to FALSE if not using PCA
 ```
-
 
 
 
@@ -28,7 +27,7 @@ library(caret)
 library(data.table)
 
 # Define PCA prefixes and suffixes
-pca_prefix <- if (USE_PCA) 'pca_' else ''
+pca_prefix <- if (USE_PCA) 'pca50_' else ''
 pca_suffix <- if (USE_PCA) '_pca' else ''
 ```
 
@@ -40,7 +39,7 @@ test_df <- fread(paste0('datasets/test_set', pca_suffix, '.csv'))
 
 # Subset the data based on PCA flag
 if (USE_PCA) {
-  X <- df[, 5:ncol(df)]
+  X <- df[, 5:55]
 } else {
   X <- df[, 4:ncol(df)]
 }
@@ -249,7 +248,7 @@ ggtitle("Best Model_margpp vs. g")
 
 
 ```{r}
-g <- if (USE_PCA) 3000 else 11000
+g <- if (USE_PCA) 10000 else 11000
 
 margpp <- 0.5
 

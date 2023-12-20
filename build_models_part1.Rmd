@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # Set the flag for PCA
-USE_PCA <- TRUE  # Change this to FALSE if not using PCA
+USE_PCA <- FALSE  # Change this to FALSE if not using PCA
 ```
 
 

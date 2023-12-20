@@ -1,6 +1,6 @@
 ---
 title: "BMA_LASSO_Regression"
-author: "Jan Kagerhuber"
+author: "Daou and Jan"
 date: "2023-12-03"
 output: pdf_document
 ---
@@ -17,7 +17,7 @@ USE_PCA <- TRUE  # Change this to FALSE if not using PCA
 
 
 
-```{r}
+```{r, message = FALSE}
 library(glmnet)
 library(caret)
 ```
@@ -174,7 +174,7 @@ write.csv(predictions_df, paste("predictions/", pca_prefix, "lasso_ebic.csv", se
 # Now we build a BMA regression Model
 
 
-```{r}
+```{r, message = FALSE}
 library(hdm)
 library(glmnet)
 library(ggplot2)
@@ -216,19 +216,17 @@ calculate_scores <- function(y_f, x_f, g_range) {
 
 
 ```{r}
-
-
 g_cv <- 1/8.697490026177834e-05
-g_ebic <- 1/3.219938e-04
+g_ebic_pca <- 1/3.219938e-04
 
+
+print("CV Lambda for normal surgests g of:")
 print(g_cv)
+print("Bic Lambda for PCA surgests g of:")
+print(g_ebic_pca)
 ```
 
-
-lambda of 6.369799e-04 would surgest a g of 1569
-lambda of 8.420499e-04 would surgest a g of 1187
-
-```{r}
+```{r, message = FALSE}
 
 # Define a range of 'g' values
 g_range <- c(5, 50, 100, 500, 1000, 1200, 1500, 2500, 3000, 5000, 10000)
@@ -248,7 +246,7 @@ ggtitle("Best Model_margpp vs. g")
 
 
 ```{r}
-g <- if (USE_PCA) 10000 else 11000
+g <- if (USE_PCA) g_ebic_pca else g_cv
 
 margpp <- 0.5
 
